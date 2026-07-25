@@ -1,364 +1,145 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>빅시티 자유서버 - 서버 가이드</title>
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #e4f2fe 0%, #f3f9fd 100%);
-            --panel-bg: rgba(255, 255, 255, 0.85);
-            --panel-border: rgba(255, 255, 255, 0.6);
-            --accent-blue: #0084ff;
-            --text-dark: #0f172a;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --divider: rgba(0, 132, 255, 0.08);
-            --danger-bg: rgba(239, 68, 68, 0.05);
-            --danger-text: #ef4444;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* 메인 래퍼 */
-        .main-container {
-            position: relative;
-            width: 100%;
-            max-width: 780px;
-            margin: 0 auto;
-        }
-
-        /* 메인 안내판 */
-        .container {
-            width: 100%;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--panel-border);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            box-sizing: border-box;
-        }
-
-        /* 오른쪽 디스코드 사이드바 */
-        .sidebar-discord {
-            position: absolute;
-            left: calc(100% + 30px);
-            top: 0;
-            width: 350px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--panel-border);
-            border-radius: 24px;
-            padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.04);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            box-sizing: border-box;
-        }
-
-        .sidebar-title {
-            font-size: 1.25em;
-            font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: -0.5px;
-            margin: 0;
-            text-align: center;
-            width: 100%;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--divider);
-        }
-
-        /* 스팀 오버레이 오픈 버튼 */
-        .steam-overlay-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            background: #5865F2; /* 디스코드 블루 */
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95em;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2);
-        }
-
-        .steam-overlay-btn:hover {
-            background: #4752c4;
-        }
-
-        .steam-overlay-btn:active {
-            transform: scale(0.98);
-        }
-
-        .sidebar-discord iframe {
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        /* 최상단 서버명 및 서버장 디스코드 정돈 */
-        .server-header {
-            text-align: center;
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--divider);
-        }
-
-        .server-header h1 {
-            margin: 0 0 12px 0;
-            font-size: 2.6em;
-            font-weight: 800;
-            color: var(--accent-blue);
-            letter-spacing: -1px;
-        }
-
-        .discord-badge {
-            display: inline-block;
-            background: #ffffff;
-            color: var(--text-dark);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.95em;
-            font-weight: 600;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .discord-badge span {
-            color: var(--accent-blue);
-            font-weight: 700;
-        }
-
-        /* 섹션 레이아웃 */
-        .section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .section-title {
-            font-size: 1.25em;
-            font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: -0.5px;
-            margin: 0;
-        }
-
-        .sub-title {
-            font-size: 1.05em;
-            font-weight: 700;
-            color: var(--accent-blue);
-            margin: 5px 0 0 0;
-        }
-
-        /* 리스트 스타일 */
-        .info-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .info-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.02);
-            font-size: 0.98em;
-            line-height: 1.6;
-        }
-
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .info-list strong {
-            color: var(--text-dark);
-        }
-
-        /* 강조 사항 (폭탄, 신고 관련) */
-        .info-list li.highlight-box {
-            background: var(--danger-bg);
-            border-left: 3px solid var(--danger-text);
-            color: var(--danger-text);
-            padding: 12px 16px;
-            border-radius: 0 12px 12px 0;
-            margin: 6px 0;
-            font-weight: 500;
-            border-bottom: none;
-        }
-
-        code {
-            background: rgba(0, 132, 255, 0.06);
-            color: #0066cc;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9em;
-            font-weight: 600;
-        }
-
-        /* 사양 간결한 안내 */
-        .spec-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 5px;
-        }
-
-        .spec-item {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(0, 132, 255, 0.04);
-            padding: 14px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .spec-label {
-            font-size: 0.85em;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .spec-value {
-            font-size: 1em;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        /* 하단 모음집 입력창 */
-        .link-wrapper {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 14px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.95em;
-            color: var(--accent-blue);
-            word-break: break-all;
-            text-align: center;
-            margin-top: 5px;
-        }
-
-        .footer {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85em;
-            border-top: 1px solid var(--divider);
-            padding-top: 20px;
-            margin-top: 10px;
-        }
-
-        /* 반응형 */
-        @media (max-width: 1200px) {
-            body {
-                padding: 40px 20px;
-            }
-            .main-container {
-                display: flex;
-                flex-direction: column;
-                gap: 30px;
-                align-items: center;
-            }
-            .sidebar-discord {
-                position: static;
-                width: 100%;
-                max-width: 780px;
-            }
-            .sidebar-discord iframe {
-                width: 100% !important;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .spec-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>빅시티 자유공원 - 서버 가이드</title>
+<style>
+  :root{
+    --bg:#eef6fd;
+    --panel:#ffffff;
+    --line:#e2e8f0;
+    --blue:#0084ff;
+    --dark:#0f172a;
+    --text:#475569;
+    --danger:#ef4444;
+    --danger-bg:#fef2f2;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    padding:32px 16px;
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+  }
+  .card{
+    width:100%;
+    max-width:640px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:28px;
+  }
+  h1{
+    margin:0 0 6px;
+    font-size:1.7em;
+    color:var(--blue);
+    text-align:center;
+  }
+  .discord{
+    text-align:center;
+    font-size:0.9em;
+    color:var(--dark);
+    margin-bottom:20px;
+  }
+  .discord b{color:var(--blue)}
+  h2{
+    font-size:1.05em;
+    color:var(--dark);
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+    margin:22px 0 10px;
+  }
+  ul{margin:0;padding-left:18px}
+  li{margin:6px 0;line-height:1.5;font-size:0.92em}
+  .warn{
+    background:var(--danger-bg);
+    color:var(--danger);
+    border-left:3px solid var(--danger);
+    padding:8px 12px;
+    border-radius:0 8px 8px 0;
+    list-style:none;
+    margin:8px 0;
+    font-weight:600;
+  }
+  code{
+    background:rgba(0,132,255,0.08);
+    color:#0066cc;
+    padding:2px 5px;
+    border-radius:4px;
+    font-size:0.9em;
+  }
+  .specs{
+    display:flex;
+    gap:10px;
+    text-align:center;
+    margin-top:6px;
+  }
+  .specs div{
+    flex:1;
+    background:#f8fafc;
+    border-radius:10px;
+    padding:10px 4px;
+    font-size:0.85em;
+  }
+  .specs b{display:block;color:var(--dark);font-size:1em}
+  .link{
+    margin-top:6px;
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px;
+    font-size:0.85em;
+    text-align:center;
+    word-break:break-all;
+    color:var(--blue);
+  }
+  .footer{
+    text-align:center;
+    font-size:0.8em;
+    color:#94a3b8;
+    margin-top:22px;
+  }
+</style>
 </head>
 <body>
+<div class="card">
+  <h1>빅시티 자유공원</h1>
+  <div class="discord">서버장 디스코드 : <b>.ae._.ve.</b></div>
 
-<div class="main-container">
+  <h2>규칙</h2>
+  <ul>
+    <li>비하 발언, 혐오 표현, 패드립 금지 (욕설 자체는 허용)</li>
+    <li>성희롱·성폭력 관련 채팅/보이스/PAC 부착 금지</li>
+    <li>타인의 프롭·빌드 결과물 무단 훼손 금지</li>
+    <li>프롭 스팸, 엔티티 남용, 프롭 밀치기, 활동 방해, 갓 킬, 노클립 킬, 레그돌·NPC 테러 금지</li>
+    <li>신고 시스템 악용(장난·허위 신고) 금지</li>
+    <li class="warn">폭탄/폭발물 엔티티는 서버 렉을 유발하니 사용 주의</li>
+  </ul>
 
-    <div class="container">
-        <div class="server-header">
-            <h1>빅시티 자유공원</h1>
-            <div class="discord-badge">서버장 디스코드 : <span>.ae._.ve.</span></div>
-        </div>
+  <h2>안내</h2>
+  <ul>
+    <li>기타 문의는 서버장 디스코드로</li>
+    <li>5분마다 데칼·NPC 시체 자동 정리</li>
+    <li>명령어: <code>!menu</code>(ULX 메뉴) · <code>!time</code>(시간) · <code>!신고</code>(유저 신고)</li>
+    <li>타인에게 피해 없는 선에서 자유롭게 이용 가능</li>
+    <li>PC / 스팀덱 / VR 지원 (VR은 콘솔에 <code>vrmod</code> 입력)</li>
+  </ul>
 
-        <div class="section">
-            <h2 class="section-title">서버 이용 규칙</h2>
-            <div class="sub-title">[ 기본 매너 및 금지 행위 ]</div>
-            <ul class="info-list">
-                <li><strong>욕설 및 비하 발언:</strong> 욕설은 허용하나 비하 발언은 금지합니다. (특히 일베/메갈 등 혐오 표현 및 패드립 즉시 차단)</li>
-                <li><strong>성폭력 관련 규칙:</strong> 서버 내에서 성희롱 및 성폭력 관련  채팅과 보이스를 금합니다. 적발시 처벌 받을 수 있습니다. 상대방을 비하하는 텍스트를 pac에 부착 시 처벌 받습니다</li>
-                <li><strong>제작물 보호:</strong> 다른 유저가 제작 중인 프롭이나 빌드 결과물을 허락 없이 훼손하지 마세요.</li>
-                <li><strong>기타 금지:</strong> 무분별한 프롭 스팸 및 엔티티 남용, 프롭 밀치기, 활동 방해(빌드, PAC), 갓 킬, 노클립 킬, 레그돌 및 NPC 테러를 금지합니다.</li>
-                <li><strong>신고 악용 금지:</strong> 신고 시스템(Report)을 장난이나 허위 사실로 악용할 경우 제재 대상이 됩니다.</li>
-                <li class="highlight-box">엔티티 탭의 '폭탄/폭발물' 카테고리는 서버 전체 렉을 유발하므로 사용 전 주의하세요.</li>
-            </ul>
-        </div>
+  <h2>서버 사양</h2>
+  <div class="specs">
+    <div><b>Ryzen 9 7900</b>CPU</div>
+    <div><b>12GB</b>RAM</div>
+    <div><b>300GB SSD</b>저장공간</div>
+  </div>
 
-        <div class="section">
-            <h2 class="section-title">서버 안내 및 편의기능</h2>
-            <ul class="info-list">
-                <li><strong>기타 문의:</strong> 기타 문의는 서버장 디코로 보내시면 됩니다.</li>
-                <li><strong>최적화 시스템:</strong> 서버 부하를 줄이기 위해 5분마다 데칼 및 NPC 시체가 자동 정리가 실행됩니다.</li>
-                <li><strong>편의 명령어:</strong> 채팅창에 <code>!menu</code>(ULX 메뉴), <code>!time</code>(현재 시간)을 입력해보세요.</li>
-                <li><strong>자유로운 환경:</strong> 본 서버는 샌드박스 기반 자유 서버로, 타인에게 피해를 주지 않는 선에서 모든 활동이 허용됩니다.</li>
-                <li class="highlight-box">신고가 필요할 땐 !신고를 사용해 유저에게 신고가 가능합니다.</li>
-                <li>현재 서버는 호스팅을 사용하지만 과도한 물리 연산이나 렉 유발 행위는 자제 부탁드립니다.</li>
-                <li>현재 서버는 PC, 스팀덱, vr기기에서 플레이가 가능합니다. (vr 사용시 콘솔에 vrmod 입력하기)</li>
-            </ul>
-        </div>
+  <h2>모음집</h2>
+  <div class="link">https://steamcommunity.com/sharedfiles/filedetails/?id=3661460068</div>
 
-        <div class="section">
-            <h2 class="section-title">서버 호스트 사양</h2>
-            <div class="spec-grid">
-                <div class="spec-item">
-                    <div class="spec-label">CPU</div>
-                    <div class="spec-value">Ryzen 9 7900</div>
-                </div>
-                <div class="spec-item">
-                    <div class="spec-label">RAM</div>
-                    <div class="spec-value">12GB</div>
-                </div>
-                <div class="spec-item">
-                    <div class="spec-label">STORAGE</div>
-                    <div class="spec-value">SSD 300GB</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section" style="text-align: center;">
-            <h2 class="section-title" style="text-align: center;">커뮤니티 및 모음집</h2>
-            <p style="color: var(--text-muted); font-size: 0.9em; margin: 0 0 5px 0;">아래 링크를 복사해서 스팀 브라우저에 붙여넣어 모음집을 구독하세요.</p>
-            <div class="link-wrapper">https://steamcommunity.com/sharedfiles/filedetails/?id=3661460068</div>
-        </div>
-
-        <div class="footer">
-            &copy; 2026 빅시티 자유공원. All Rights Reserved.
-        </div>
-    </div>
+  <div class="footer">&copy; 2026 빅시티 자유공원</div>
 </div>
-
 </body>
 </html>
